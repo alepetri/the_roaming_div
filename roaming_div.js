@@ -1,21 +1,31 @@
 class RoamingDiv {
-    constructor(obj, container) {
+    ROAM_DIRECTIONS = {
+        LEFT: -1,
+        STRAIGHT: 0,
+        RIGHT: 1,
+    }
+
+    constructor(obj, container, fps=60, speed=100, heading_init=Math.PI, deg_to_turn=2, chance_to_change=0.1) {
         this.object = obj;
         this.container = container;
-        this.object.style.position = 'absolute';
-        this.fps = 60;
-        this.base_speed = 100
+
+        this.object.style.position = 'relative';
+
+        this.fps = fps;
+        this.base_speed = speed;
+        this.speed = this.base_speed;
+        this.heading = heading_init;
+        this.deg_to_turn = deg_to_turn;
+        this.chance_to_change = chance_to_change;
 
         this.timestamp = null;
 
-        this.accel_padding = [30, 30];
+        this.roam_direction = this.ROAM_DIRECTIONS['STRAIGHT']
 
         const move_space = this.getMovableDimensions();
+        this.accel_padding = [move_space[0]/10, move_space[1]/10];
 
-        this.heading = Math.PI;
-        this.speed = this.base_speed;
-
-        this.position = [Math.floor(move_space[0]/2), Math.floor(move_space[1]/2)]; // pixel (top-left of div relative to top-left of container)
+        this.position = [move_space[0]/2, move_space[1]/2]; // pixel (top-left of div relative to top-left of container)
         this.drawPosition();
         this.setSpeed(this.base_speed); // pixel/sec
         this.accelaration = [0, 0]; // pixel/sec^2
@@ -54,8 +64,7 @@ class RoamingDiv {
                     this.setSpeed(this.base_speed);
                 }
 
-                // Add heading noise between -1 and 1 deg
-                this.setHeading(this.heading + (Math.random()-0.5)*6*Math.PI/180);
+                this.roam();
             }
             else {
                 if (!dim0_inbounds) {
@@ -132,5 +141,50 @@ class RoamingDiv {
     drawPosition() {
         this.object.style.top = this.position[0] + 'px';
         this.object.style.left = this.position[1] + 'px';
+    }
+
+    roam(){
+        const rand = Math.random();
+
+        if (this.roam_direction === this.ROAM_DIRECTIONS['STRAIGHT']) {
+            if (rand < 1-this.chance_to_change) {
+                this.roam_direction = this.ROAM_DIRECTIONS['STRAIGHT'];
+            }
+            else if (rand < 1-this.chance_to_change/2) {
+                this.roam_direction = this.ROAM_DIRECTIONS['LEFT'];
+            }
+            else {
+                this.roam_direction = this.ROAM_DIRECTIONS['RIGHT'];
+            }
+        }
+        else if (this.roam_direction === this.ROAM_DIRECTIONS['LEFT']) {
+            if (rand < 1-this.chance_to_change) {
+                this.roam_direction = this.ROAM_DIRECTIONS['LEFT'];
+            }
+            else if (rand < 1-this.chance_to_change/3) {
+                this.roam_direction = this.ROAM_DIRECTIONS['STRAIGHT'];
+            }
+            else {
+                this.roam_direction = this.ROAM_DIRECTIONS['RIGHT'];
+            }
+        }
+        else {
+            if (rand < 1-this.chance_to_change) {
+                this.roam_direction = this.ROAM_DIRECTIONS['RIGHT'];
+            }
+            else if (rand < 1-this.chance_to_change/3) {
+                this.roam_direction = this.ROAM_DIRECTIONS['STRAIGHT'];
+            }
+            else {
+                this.roam_direction = this.ROAM_DIRECTIONS['LEFT'];
+            }
+        }
+        
+        if (this.roam_direction === this.ROAM_DIRECTIONS['LEFT']) {
+            this.setHeading(this.heading - this.deg_to_turn * Math.PI / 180)
+        }
+        if (this.roam_direction === this.ROAM_DIRECTIONS['RIGHT']) {
+            this.setHeading(this.heading + this.deg_to_turn * Math.PI / 180)
+        }
     }
 }
