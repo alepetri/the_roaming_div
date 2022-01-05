@@ -5,19 +5,21 @@
     </head>
     <style>
         .b {
-            width: 300px;
-            height: 200px;
+            width: 400px;
+            height: 300px;
             background-color: gray;
         }
     </style>
     <body>
         <div class='b' id='b'>
-            <img id='a' src='./assets/al_icon.png' width=50px height=50px>
+            <img id='a' src='./assets/al_icon.png' width=60px height=60px>
         </div>
     </body>
     <script>
-        var x = new RoamingDiv(document.getElementById('a'), document.getElementById('b'));
-        window.requestAnimationFrame(x.getNextFrame.bind(x));
+        var my_roaming_div = new RoamingDiv(
+            document.getElementById('a'), // div to roam
+            document.getElementById('b'), // container
+        );
     </script>
 </html>
 
