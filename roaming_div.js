@@ -5,7 +5,7 @@ class RoamingDiv {
         RIGHT: 1,
     }
 
-    constructor(obj, container, fps=60, speed=100, heading_init=Math.PI, deg_to_turn=2, chance_to_change=0.1) {
+    constructor(obj, container, fps=60, speed=100, heading_init=180, deg_to_turn=2, chance_to_change=0.1) {
         this.object = obj;
         this.container = container;
 
@@ -14,7 +14,7 @@ class RoamingDiv {
         this.fps = fps;
         this.base_speed = speed;
         this.speed = this.base_speed;
-        this.heading = heading_init;
+        this.heading = heading_init*Math.PI/180;
         this.deg_to_turn = deg_to_turn;
         this.chance_to_change = chance_to_change;
 
@@ -29,6 +29,8 @@ class RoamingDiv {
         this.drawPosition();
         this.setSpeed(this.base_speed); // pixel/sec
         this.accelaration = [0, 0]; // pixel/sec^2
+
+        window.requestAnimationFrame(this.getNextFrame.bind(this));
     }
 
     getMovableDimensions() {
