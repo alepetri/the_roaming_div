@@ -5,16 +5,29 @@ class RoamingDiv {
         RIGHT: 1,
     }
 
-    constructor(obj, container, fps=60, speed=100, heading_init=180, deg_to_turn=2, chance_to_change=0.1) {
+    constructor(obj, container=null, fps=60, speed=100, heading_init=null, deg_to_turn=2, chance_to_change=0.1) {
         this.object = obj;
-        this.container = container;
+        if (!container) {
+            this.container = this.object.parentNode;
+        }
+        else {
+            this.container = container;
+        }
+        
+        this.roaming = true;
 
-        this.object.style.position = 'relative';
+        this.container.style.position = 'relative';
+        this.object.style.position = 'absolute';
 
         this.fps = fps;
         this.base_speed = speed;
         this.speed = this.base_speed;
-        this.heading = heading_init*Math.PI/180;
+        if (heading_init) {
+            this.heading = heading_init*Math.PI/180;
+        }
+        else {
+            this.heading = Math.random()*360*Math.PI/180;
+        }
         this.deg_to_turn = deg_to_turn;
         this.chance_to_change = chance_to_change;
 
@@ -33,6 +46,18 @@ class RoamingDiv {
         window.requestAnimationFrame(this.getNextFrame.bind(this));
     }
 
+    startRoam() {
+        if (!this.roaming) {
+            this.roaming = true;
+            window.requestAnimationFrame(this.getNextFrame.bind(this));
+        }
+        
+    }
+
+    stopRoam() {
+        this.roaming = false;
+    }
+
     getMovableDimensions() {
         if (this.container === window) {
             return [
@@ -48,6 +73,10 @@ class RoamingDiv {
     }
 
     getNextFrame() {
+        if (!this.roaming) {
+            return;
+        }
+
         const now = new Date().getTime();
         if (!this.timestamp) {
             this.timestamp = now;
