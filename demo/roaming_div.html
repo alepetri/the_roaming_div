@@ -2,6 +2,10 @@
 <html lang="en">
     <head>
         <script type="text/javascript" src="../roaming_div.js"></script>
+        <script 
+            src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+            integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+            crossorigin="anonymous"></script>
     </head>
     <style>
         .b {
@@ -9,17 +13,34 @@
             height: 300px;
             background-color: gray;
         }
+        .roamer:hover{
+            transform: scale(1.2);
+            transition: all ease .2s;
+        }
     </style>
     <body>
         <div class='b' id='b'>
-            <img id='a' src='./assets/al_icon.png' width=60px height=60px>
+            <a href='https://alepetri.github.io/'>
+                <img id='a' class='roamer' src='./assets/al_icon.png'  width=60px height=60px>
+            </a>
         </div>
     </body>
     <script>
-        var my_roaming_div = new RoamingDiv(
-            document.getElementById('a'), // div to roam
-            document.getElementById('b'), // container
-        );
+        $('.roamer').each(function(i, obj) {
+            if (!obj.roamerObj){
+                obj.roamerObj = new RoamingDiv(obj, obj.parentNode.parentNode);
+            }
+        }).mouseover(function() {
+            const obj = $(this)[0];
+            if (obj.roamerObj){
+                obj.roamerObj.stopRoam();
+            }
+        }).mouseleave(function() {
+            const obj = $(this)[0];
+            if (obj.roamerObj){
+                obj.roamerObj.startRoam();
+            }
+        });
     </script>
 </html>
 

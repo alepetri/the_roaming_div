@@ -3,12 +3,22 @@ A simple js class that allows divs to roam around their container!
 
 ![The Roaming Div Demo](./demo/assets/roaming_div.gif)
 
-## Tunable Settings
-- FPS
-- Speed (pixels/sec)
-- Initial Heading (deg)
-- Degrees to Turn while Turning (deg)
-- How Often it Changes Direction (pct)
+## Tunable Initialization
+| Parameter | Default Value |
+| :-: | :-:|
+| Container Div | *immeadiate parentNode* |
+| FPS | *60* |
+| Speed  | *100 pixels/sec* |
+| Initial Heading (deg) |  *random direction* |
+| Degrees to Turn while Turning | *2 deg* |
+| How Often it Changes Direction | *10%* |
+
+## Methods
+- stopRoam()
+    - Use with ```mouseover()``` to pause the roaming for buttons
+- startRoam()
+    - Use with ```mouseleave()``` to continue roaming
+
 
 ## Use
 1. Include the file
@@ -22,13 +32,9 @@ A simple js class that allows divs to roam around their container!
     <script>
         var my_roaming_div = new RoamingDiv(
             document.getElementById('a'), // div to roam
-            document.getElementById('b'), // container
+            document.getElementById('b'), // container 
         );
     </script>
     ```
 
 *Check out `demo/roaming_div.html` for an example!*
-
-
-## TODOs:
-- Add stop/start functionality to allow pause upon hoverover
